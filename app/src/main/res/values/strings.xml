@@ -19,6 +19,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="list_items_passed">ListItemsActivity passed: %s</string>
+    <string name="response_default">Here is my response</string>
     <string name="invalid_email">Please enter a valid email address</string>
     <string name="empty_password">Password cannot be empty</string>
 </resources>

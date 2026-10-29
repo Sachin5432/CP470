@@ -20,6 +20,7 @@
     <string name="cancel">Annuler</string>
 
     <string name="list_items_passed">ListItemsActivity a transmis : %s</string>
+    <string name="response_default">Voici ma réponse</string>
     <string name="invalid_email">Veuillez entrer une adresse e-mail valide</string>
     <string name="empty_password">Le mot de passe ne peut pas être vide</string>
 </resources>
