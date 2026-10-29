@@ -16,9 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.core.view.WindowCompat;
-
-import java.util.ArrayList;
 
 public class ChatWindow extends AppCompatActivity {
 
@@ -27,7 +26,7 @@ public class ChatWindow extends AppCompatActivity {
     private ListView listView;
     private EditText textInput;
     private Button sendButton;
-    private ArrayList<String> chatMessages;
+    private ChatMessageManager chatMessageManager;
     private ChatAdapter messageAdapter;
 
     @Override
@@ -45,22 +44,23 @@ public class ChatWindow extends AppCompatActivity {
         textInput = findViewById(R.id.chatEditText);
         sendButton = findViewById(R.id.sendButton);
 
-        chatMessages = new ArrayList<>();
+        chatMessageManager = new ChatMessageManager();
         messageAdapter = new ChatAdapter(this);
         listView.setAdapter(messageAdapter);
 
         sendButton.setOnClickListener(v -> {
             String messageText = textInput.getText() != null ? textInput.getText().toString() : "";
-            chatMessages.add(messageText);
-            messageAdapter.notifyDataSetChanged();
-            textInput.setText("");
+            if (chatMessageManager.addMessage(messageText)) {
+                messageAdapter.notifyDataSetChanged();
+                textInput.setText("");
+            }
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            getOnBackPressedDispatcher().onBackPressed();
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -74,13 +74,13 @@ public class ChatWindow extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return chatMessages != null ? chatMessages.size() : 0;
+            return chatMessageManager != null ? chatMessageManager.getMessageCount() : 0;
         }
 
         @Nullable
         @Override
         public String getItem(int position) {
-            return chatMessages != null ? chatMessages.get(position) : "";
+            return chatMessageManager != null ? chatMessageManager.getMessage(position) : "";
         }
 
         @NonNull
@@ -89,7 +89,7 @@ public class ChatWindow extends AppCompatActivity {
             LayoutInflater inflater = ChatWindow.this.getLayoutInflater();
             View result;
 
-            if (position % 2 == 0) {
+            if (chatMessageManager != null && chatMessageManager.isIncoming(position)) {
                 result = inflater.inflate(R.layout.chat_row_incoming, parent, false);
             } else {
                 result = inflater.inflate(R.layout.chat_row_outgoing, parent, false);

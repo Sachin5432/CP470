@@ -11,9 +11,9 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
@@ -30,7 +30,7 @@ public class ChatWindowActivityTest {
         String testMessage = "Hello from Espresso Test";
 
         onView(withId(R.id.chatEditText))
-                .perform(typeText(testMessage), closeSoftKeyboard());
+                .perform(replaceText(testMessage), closeSoftKeyboard());
 
         onView(withId(R.id.sendButton))
                 .perform(click());
@@ -48,17 +48,36 @@ public class ChatWindowActivityTest {
     }
 
     @Test
+    public void testEmptyAndWhitespaceMessagesIgnored() {
+        // Attempt to send empty message
+        onView(withId(R.id.chatEditText))
+                .perform(replaceText(""), closeSoftKeyboard());
+        onView(withId(R.id.sendButton))
+                .perform(click());
+
+        // Attempt to send whitespace message
+        onView(withId(R.id.chatEditText))
+                .perform(replaceText("   "), closeSoftKeyboard());
+        onView(withId(R.id.sendButton))
+                .perform(click());
+
+        // Verify input field remains empty
+        onView(withId(R.id.chatEditText))
+                .check(matches(withText("   ")));
+    }
+
+    @Test
     public void testSendMultipleMessages() {
         String message1 = "First message";
         String message2 = "Second message";
 
         onView(withId(R.id.chatEditText))
-                .perform(typeText(message1), closeSoftKeyboard());
+                .perform(replaceText(message1), closeSoftKeyboard());
         onView(withId(R.id.sendButton))
                 .perform(click());
 
         onView(withId(R.id.chatEditText))
-                .perform(typeText(message2), closeSoftKeyboard());
+                .perform(replaceText(message2), closeSoftKeyboard());
         onView(withId(R.id.sendButton))
                 .perform(click());
 

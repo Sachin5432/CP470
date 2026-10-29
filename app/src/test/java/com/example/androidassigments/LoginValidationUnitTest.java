@@ -2,45 +2,44 @@ package com.example.androidassigments;
 
 import org.junit.Test;
 
-import java.util.regex.Pattern;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Unit tests directly testing {@link LoginValidator} app class.
+ */
 public class LoginValidationUnitTest {
-
-    // Standard email regex pattern matching android.util.Patterns.EMAIL_ADDRESS format
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
-    );
 
     @Test
     public void testValidEmailAddresses() {
-        assertTrue(isValidEmail("user@domain.com"));
-        assertTrue(isValidEmail("student@university.edu"));
-        assertTrue(isValidEmail("test.user@gmail.com"));
+        assertTrue(LoginValidator.isValidEmail("user@domain.com"));
+        assertTrue(LoginValidator.isValidEmail("student@university.edu"));
+        assertTrue(LoginValidator.isValidEmail("test.user@gmail.com"));
+        assertTrue(LoginValidator.isValidEmail("john.doe+tag@company.co.uk"));
     }
 
     @Test
     public void testInvalidEmailAddresses() {
-        assertFalse(isValidEmail("invalid-email"));
-        assertFalse(isValidEmail("user@"));
-        assertFalse(isValidEmail("@domain.com"));
-        assertFalse(isValidEmail(""));
+        assertFalse(LoginValidator.isValidEmail("invalid-email"));
+        assertFalse(LoginValidator.isValidEmail("user@"));
+        assertFalse(LoginValidator.isValidEmail("@domain.com"));
+        assertFalse(LoginValidator.isValidEmail(""));
+        assertFalse(LoginValidator.isValidEmail("   "));
+        assertFalse(LoginValidator.isValidEmail(null));
+        assertFalse(LoginValidator.isValidEmail("user@domain"));
     }
 
     @Test
-    public void testPasswordNotEmpty() {
-        assertTrue(isValidPassword("password123"));
-        assertFalse(isValidPassword(""));
-        assertFalse(isValidPassword("   ".trim()));
+    public void testValidPasswords() {
+        assertTrue(LoginValidator.isValidPassword("password123"));
+        assertTrue(LoginValidator.isValidPassword("a"));
+        assertTrue(LoginValidator.isValidPassword("  securePass1  "));
     }
 
-    private boolean isValidEmail(String email) {
-        return email != null && !email.trim().isEmpty() && EMAIL_PATTERN.matcher(email.trim()).matches();
-    }
-
-    private boolean isValidPassword(String password) {
-        return password != null && !password.trim().isEmpty();
+    @Test
+    public void testInvalidPasswords() {
+        assertFalse(LoginValidator.isValidPassword(""));
+        assertFalse(LoginValidator.isValidPassword("   "));
+        assertFalse(LoginValidator.isValidPassword(null));
     }
 }

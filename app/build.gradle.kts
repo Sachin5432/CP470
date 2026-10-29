@@ -52,15 +52,16 @@ dependencies {
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest")
+    mustRunAfter("createDebugUnitTestCoverageReport")
     reports {
         xml.required.set(true)
         html.required.set(true)
     }
-    val debugTree = fileTree("${project.layout.buildDirectory.get()}/intermediates/javac/debug") {
+    val debugTree = fileTree("${project.layout.buildDirectory.get()}/intermediates/javac/debug/compileDebugJavaWithJavac/classes") {
         exclude("**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*")
     }
     val mainSrc = "${project.projectDir}/src/main/java"
     sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files(debugTree))
-    executionData.setFrom(fileTree(project.layout.buildDirectory.get()).include("jacoco/testDebugUnitTest.exec"))
+    executionData.setFrom(fileTree(project.layout.buildDirectory.get()).include("**/testDebugUnitTest.exec"))
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,23 +38,23 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.setText(savedEmail);
 
         loginButton.setOnClickListener(v -> {
-            String email = editTextEmail.getText() != null ? editTextEmail.getText().toString().trim() : "";
-            String password = editTextPassword.getText() != null ? editTextPassword.getText().toString().trim() : "";
+            String email = editTextEmail.getText() != null ? editTextEmail.getText().toString() : "";
+            String password = editTextPassword.getText() != null ? editTextPassword.getText().toString() : "";
 
-            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!LoginValidator.isValidEmail(email)) {
                 editTextEmail.setError(getString(R.string.invalid_email));
                 Toast.makeText(LoginActivity.this, getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (password.isEmpty()) {
+            if (!LoginValidator.isValidPassword(password)) {
                 editTextPassword.setError(getString(R.string.empty_password));
                 Toast.makeText(LoginActivity.this, getString(R.string.empty_password), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("DefaultEmail", email);
+            editor.putString("DefaultEmail", email.trim());
             editor.commit();
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
