@@ -37,6 +37,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 10);
             });
         }
+
+        Button startChatButton = findViewById(R.id.startChatButton);
+        if (startChatButton != null) {
+            startChatButton.setOnClickListener(v -> {
+                Log.i(ACTIVITY_NAME, "User clicked Start Chat");
+                Intent intent = new Intent(MainActivity.this, ChatWindow.class);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override
