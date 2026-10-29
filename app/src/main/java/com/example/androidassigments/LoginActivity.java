@@ -1,0 +1,15 @@
+package com.example.androidassigments;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+
+public class LoginActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        setContentView(R.layout.activity_login);
+    }
+}
