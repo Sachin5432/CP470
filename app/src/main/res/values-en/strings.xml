@@ -3,4 +3,11 @@
     <string name="app_name">AndroidAssigments</string>
     <string name="hello_message">Hello World!</string>
     <string name="ButtonText">I\’m a button</string>
+    <string name="login">Connexion</string>
+    <string name="login_name">nom d\'utilisateur</string>
+    <string name="password">mot de passe</string>
+    <string name="radio">Radio</string>
+    <string name="check">Case à cocher</string>
+    <string name="switch_text">Que fait ceci ?</string>
+    <string name="camera">Appareil photo</string>
 </resources>
