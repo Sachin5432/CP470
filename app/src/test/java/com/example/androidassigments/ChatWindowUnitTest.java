@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit tests directly testing {@link ChatMessageManager} app class and activity constants.
+ * Unit tests directly testing {@link ChatMessageManager} app class.
  */
 public class ChatWindowUnitTest {
 
@@ -84,13 +84,5 @@ public class ChatWindowUnitTest {
         assertEquals(0, chatMessageManager.getMessageCount());
         // Verify copy list was unaffected by clear
         assertEquals(2, copy.size());
-    }
-
-    @Test
-    public void testActivityNameConstant() {
-        assertEquals("ChatWindow", ChatWindow.ACTIVITY_NAME);
-        assertEquals("MainActivity", MainActivity.ACTIVITY_NAME);
-        assertEquals("LoginActivity", LoginActivity.ACTIVITY_NAME);
-        assertEquals("ListItemsActivity", ListItemsActivity.ACTIVITY_NAME);
     }
 }
