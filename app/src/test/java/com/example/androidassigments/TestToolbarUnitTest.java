@@ -8,58 +8,49 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit test for TestToolbar message management and action helper logic.
+ * Unit tests directly testing {@link ToolbarMessageManager} production class.
  */
 public class TestToolbarUnitTest {
 
-    public static class ToolbarMessageState {
-        private String currentMessage;
-
-        public ToolbarMessageState(String defaultMessage) {
-            this.currentMessage = defaultMessage;
-        }
-
-        public String getCurrentMessage() {
-            return currentMessage;
-        }
-
-        public boolean updateMessage(String newMessage) {
-            if (newMessage == null || newMessage.trim().isEmpty()) {
-                return false;
-            }
-            this.currentMessage = newMessage.trim();
-            return true;
-        }
-    }
-
-    private ToolbarMessageState messageState;
+    private ToolbarMessageManager messageManager;
 
     @Before
     public void setUp() {
-        messageState = new ToolbarMessageState("You selected item 1");
+        messageManager = new ToolbarMessageManager("You selected item 1");
     }
 
     @Test
     public void testDefaultMessage() {
-        assertEquals("You selected item 1", messageState.getCurrentMessage());
+        assertEquals("You selected item 1", messageManager.getMessage());
+        assertEquals("You selected item 1", messageManager.getDefaultMessage());
+        assertTrue(messageManager.isDefaultMessage());
     }
 
     @Test
     public void testUpdateValidMessage() {
-        boolean updated = messageState.updateMessage("New Custom Message");
+        boolean updated = messageManager.updateMessage("New Custom Message");
         assertTrue(updated);
-        assertEquals("New Custom Message", messageState.getCurrentMessage());
+        assertEquals("New Custom Message", messageManager.getMessage());
+        assertFalse(messageManager.isDefaultMessage());
     }
 
     @Test
     public void testUpdateEmptyOrNullMessageIgnored() {
-        assertFalse(messageState.updateMessage(""));
-        assertEquals("You selected item 1", messageState.getCurrentMessage());
+        assertFalse(messageManager.updateMessage(""));
+        assertEquals("You selected item 1", messageManager.getMessage());
+        assertTrue(messageManager.isDefaultMessage());
 
-        assertFalse(messageState.updateMessage("   "));
-        assertEquals("You selected item 1", messageState.getCurrentMessage());
+        assertFalse(messageManager.updateMessage("   "));
+        assertEquals("You selected item 1", messageManager.getMessage());
 
-        assertFalse(messageState.updateMessage(null));
-        assertEquals("You selected item 1", messageState.getCurrentMessage());
+        assertFalse(messageManager.updateMessage(null));
+        assertEquals("You selected item 1", messageManager.getMessage());
+    }
+
+    @Test
+    public void testNullDefaultMessageHandledGracefully() {
+        ToolbarMessageManager nullManager = new ToolbarMessageManager(null);
+        assertEquals("", nullManager.getMessage());
+        assertEquals("", nullManager.getDefaultMessage());
     }
 }

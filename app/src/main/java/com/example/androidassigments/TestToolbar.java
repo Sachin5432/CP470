@@ -21,14 +21,10 @@ public class TestToolbar extends AppCompatActivity {
 
     private static final String TAG = "TestToolbar";
 
-    private String snackbarMessage;
+    private ToolbarMessageManager messageManager;
 
-    public String getSnackbarMessage() {
-        return snackbarMessage;
-    }
-
-    public void setSnackbarMessage(String message) {
-        this.snackbarMessage = message;
+    public ToolbarMessageManager getMessageManager() {
+        return messageManager;
     }
 
     @Override
@@ -41,7 +37,7 @@ public class TestToolbar extends AppCompatActivity {
             setSupportActionBar(toolbar);
         }
 
-        snackbarMessage = getString(R.string.default_snackbar_message);
+        messageManager = new ToolbarMessageManager(getString(R.string.default_snackbar_message));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab != null) {
@@ -63,7 +59,7 @@ public class TestToolbar extends AppCompatActivity {
         int id = mi.getItemId();
         if (id == R.id.action_one) {
             Log.d(TAG, "Option 1 selected");
-            Snackbar.make(findViewById(R.id.test_toolbar_root), snackbarMessage, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.test_toolbar_root), messageManager.getMessage(), Snackbar.LENGTH_LONG).show();
             return true;
         } else if (id == R.id.action_two) {
             Log.d(TAG, "Option 2 selected");
@@ -95,10 +91,7 @@ public class TestToolbar extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (customEditText != null) {
-                        String newMsg = customEditText.getText().toString();
-                        if (!newMsg.trim().isEmpty()) {
-                            snackbarMessage = newMsg;
-                        }
+                        messageManager.updateMessage(customEditText.getText().toString());
                     }
                 }
             });

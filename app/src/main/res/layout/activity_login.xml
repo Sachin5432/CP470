@@ -32,8 +32,7 @@
 
     <Button
         android:id="@+id/loginButton"
+        style="@style/CustomButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/login" />
 </LinearLayout>
