@@ -26,4 +26,16 @@
     <string name="start_chat">Démarrer le chat</string>
     <string name="send">Envoyer</string>
     <string name="chat_hint">Écrivez un message</string>
+
+    <!-- Part 4 Toolbar & Dialog strings -->
+    <string name="test_toolbar">Tester la barre d\'outils</string>
+    <string name="choice_1">Choix 1</string>
+    <string name="choice_2">Choix 2</string>
+    <string name="choice_3">Choix 3</string>
+    <string name="about">À propos</string>
+    <string name="dialog_go_back_title">Voulez-vous revenir en arrière ?</string>
+    <string name="default_snackbar_message">Vous avez sélectionné l\'élément 1</string>
+    <string name="fab_snackbar_message">Clic FAB ! Bienvenue dans TestToolbar.</string>
+    <string name="about_toast_message">Version 1.0, par Sachin Purewal</string>
+    <string name="new_message_hint">Nouveau message</string>
 </resources>
