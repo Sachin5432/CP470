@@ -19,13 +19,16 @@ public class ChatDatabaseHelper extends SQLiteOpenHelper {
         super(ctx, DATABASE_NAME, null, VERSION_NUM);
     }
 
+    public static String getCreateTableQuery() {
+        return "CREATE TABLE " + TABLE_NAME + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_MESSAGE + " TEXT);";
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(ACTIVITY_NAME, "Calling onCreate");
-        String createTableQuery = "CREATE TABLE " + TABLE_NAME + " ("
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + KEY_MESSAGE + " TEXT);";
-        db.execSQL(createTableQuery);
+        db.execSQL(getCreateTableQuery());
     }
 
     @Override

@@ -5,13 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,13 +33,10 @@ public class ChatDatabaseInstrumentedTest {
     private ChatDatabaseHelper dbHelper;
     private SQLiteDatabase database;
 
-    @Rule
-    public ActivityScenarioRule<ChatWindow> activityRule =
-            new ActivityScenarioRule<>(ChatWindow.class);
-
     @Before
     public void setUp() {
         context = ApplicationProvider.getApplicationContext();
+        context.deleteDatabase(ChatDatabaseHelper.DATABASE_NAME);
         dbHelper = new ChatDatabaseHelper(context);
         database = dbHelper.getWritableDatabase();
     }
@@ -52,6 +48,9 @@ public class ChatDatabaseInstrumentedTest {
         }
         if (dbHelper != null) {
             dbHelper.close();
+        }
+        if (context != null) {
+            context.deleteDatabase(ChatDatabaseHelper.DATABASE_NAME);
         }
     }
 
@@ -111,16 +110,18 @@ public class ChatDatabaseInstrumentedTest {
 
     @Test
     public void testChatWindowSendsAndPersistsMessageInDatabase() {
-        String msg = "Hello SQLite Database";
+        try (ActivityScenario<ChatWindow> scenario = ActivityScenario.launch(ChatWindow.class)) {
+            String msg = "Hello SQLite Database";
 
-        onView(withId(R.id.chatEditText)).perform(replaceText(msg), closeSoftKeyboard());
-        onView(withId(R.id.sendButton)).perform(click());
+            onView(withId(R.id.chatEditText)).perform(replaceText(msg), closeSoftKeyboard());
+            onView(withId(R.id.sendButton)).perform(click());
 
-        // Verify message appears in ListView
-        onData(anything())
-                .inAdapterView(withId(R.id.chatListView))
-                .atPosition(0)
-                .onChildView(withId(R.id.messageText))
-                .check(matches(withText(msg)));
+            // Verify message appears in ListView
+            onData(anything())
+                    .inAdapterView(withId(R.id.chatListView))
+                    .atPosition(0)
+                    .onChildView(withId(R.id.messageText))
+                    .check(matches(withText(msg)));
+        }
     }
 }

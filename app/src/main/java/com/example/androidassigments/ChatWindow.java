@@ -87,7 +87,8 @@ public class ChatWindow extends AppCompatActivity {
         }
 
         sendButton.setOnClickListener(v -> {
-            String messageText = textInput.getText() != null ? textInput.getText().toString() : "";
+            String rawInput = textInput.getText() != null ? textInput.getText().toString() : "";
+            String messageText = rawInput.trim();
             if (chatMessageManager.addMessage(messageText)) {
                 ContentValues cv = new ContentValues();
                 cv.put(ChatDatabaseHelper.KEY_MESSAGE, messageText);
