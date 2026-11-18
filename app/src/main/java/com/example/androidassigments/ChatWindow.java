@@ -1,6 +1,9 @@
 package com.example.androidassigments;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +32,9 @@ public class ChatWindow extends AppCompatActivity {
     private ChatMessageManager chatMessageManager;
     private ChatAdapter messageAdapter;
 
+    private ChatDatabaseHelper dbHelper;
+    private SQLiteDatabase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +54,45 @@ public class ChatWindow extends AppCompatActivity {
         messageAdapter = new ChatAdapter(this);
         listView.setAdapter(messageAdapter);
 
+        // Open Database
+        dbHelper = new ChatDatabaseHelper(this);
+        database = dbHelper.getWritableDatabase();
+
+        // Query existing chat messages
+        Cursor cursor = database.query(
+                ChatDatabaseHelper.TABLE_NAME,
+                new String[]{ChatDatabaseHelper.KEY_ID, ChatDatabaseHelper.KEY_MESSAGE},
+                null, null, null, null, null
+        );
+
+        if (cursor != null) {
+            Log.i(ACTIVITY_NAME, "Cursor’s  column count =" + cursor.getColumnCount());
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                Log.i(ACTIVITY_NAME, "Cursor column name = " + cursor.getColumnName(i));
+            }
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    int colIndex = cursor.getColumnIndex(ChatDatabaseHelper.KEY_MESSAGE);
+                    if (colIndex != -1) {
+                        String msg = cursor.getString(colIndex);
+                        Log.i(ACTIVITY_NAME, "SQL MESSAGE:" + msg);
+                        chatMessageManager.addMessage(msg);
+                    }
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            messageAdapter.notifyDataSetChanged();
+        }
+
         sendButton.setOnClickListener(v -> {
             String messageText = textInput.getText() != null ? textInput.getText().toString() : "";
             if (chatMessageManager.addMessage(messageText)) {
+                ContentValues cv = new ContentValues();
+                cv.put(ChatDatabaseHelper.KEY_MESSAGE, messageText);
+                database.insert(ChatDatabaseHelper.TABLE_NAME, null, cv);
+
                 messageAdapter.notifyDataSetChanged();
                 textInput.setText("");
             }
@@ -130,6 +172,12 @@ public class ChatWindow extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (database != null && database.isOpen()) {
+            database.close();
+        }
+        if (dbHelper != null) {
+            dbHelper.close();
+        }
         super.onDestroy();
         Log.i(ACTIVITY_NAME, "onDestroy() called");
     }
